@@ -17,7 +17,7 @@ variable "storage_mb" {
 variable "db_version" {
     type        = string
     description = "Specifies the version of PostgreSQL to use. Valid values are 9.5, 9.6, 10, 10.0, and 11."
-    default     = "9.6"
+    default     = "10.0"
 }
 
 variable "location" {
@@ -61,12 +61,6 @@ variable "enable_db" {
   description = "toggles on/off postgresql Database within a postgresql Server"
   type        = bool
   default     = "false"
-}
-
-variable "postgresql_version" {
-  type        = string
-  description = "postgresql version"
-  default     = "8.0"
 }
 
 variable "storage_endpoint" {
@@ -199,7 +193,7 @@ variable "geo_redundant_backup_enabled" {
 variable "infrastructure_encryption_enabled" {
     type        = string
     description = "Whether or not infrastructure is encrypted for this server. Defaults to false. Changing this forces a new resource to be created."
-    default     = "true"
+    default     = "false"
 }
 
 variable "public_network_access_enabled" {
@@ -262,3 +256,4 @@ locals {
     "pg_qs.max_query_text_length"           = var.max_query_text_length
   }, var.postgresql_config)
 }
+
