@@ -29,12 +29,13 @@ resource "azurerm_postgresql_server" "primary" {
   version    = var.db_version
   storage_mb = var.storage_mb
 
-  backup_retention_days            = var.backup_retention_days
-  geo_redundant_backup_enabled     = var.geo_redundant_backup_enabled
-  auto_grow_enabled                = var.auto_grow_enabled
-  public_network_access_enabled    = var.public_network_access_enabled
-  ssl_enforcement_enabled          = true
-  ssl_minimal_tls_version_enforced = "TLS1_2"
+  backup_retention_days             = var.backup_retention_days
+  geo_redundant_backup_enabled      = var.geo_redundant_backup_enabled
+  auto_grow_enabled                 = var.auto_grow_enabled
+  public_network_access_enabled     = var.public_network_access_enabled
+  infrastructure_encryption_enabled = var.infrastructure_encryption_enabled
+  ssl_enforcement_enabled           = true
+  ssl_minimal_tls_version_enforced  = "TLS1_2"
 
   dynamic "threat_detection_policy" {
       for_each = local.if_threat_detection_policy_enabled
@@ -60,14 +61,15 @@ resource "azurerm_postgresql_server" "replica" {
   version    = var.db_version
   storage_mb = var.storage_mb
 
-  backup_retention_days            = var.backup_retention_days
-  geo_redundant_backup_enabled     = var.geo_redundant_backup_enabled
-  auto_grow_enabled                = var.auto_grow_enabled
-  public_network_access_enabled    = var.public_network_access_enabled
-  ssl_enforcement_enabled          = true
-  ssl_minimal_tls_version_enforced = "TLS1_2"
-  create_mode                      = var.create_mode
-  creation_source_server_id        = azurerm_postgresql_server.primary.id
+  backup_retention_days             = var.backup_retention_days
+  geo_redundant_backup_enabled      = var.geo_redundant_backup_enabled
+  auto_grow_enabled                 = var.auto_grow_enabled
+  public_network_access_enabled     = var.public_network_access_enabled
+  infrastructure_encryption_enabled = var.infrastructure_encryption_enabled
+  ssl_enforcement_enabled           = true
+  ssl_minimal_tls_version_enforced  = "TLS1_2"
+  create_mode                       = var.create_mode
+  creation_source_server_id         = azurerm_postgresql_server.primary.id
 
   dynamic "threat_detection_policy" {
       for_each = local.if_threat_detection_policy_enabled
@@ -182,13 +184,6 @@ data "azurerm_virtual_network" "vnet01" {
   name                = var.virtual_network_name
   resource_group_name = var.vnet_resource_group_name
 }
-# Private Link Endpoint for postgresSQL Server - Existing subnet
-data "azurerm_subnet" "snet01" {
-  name                 = var.subnet_name  
-  virtual_network_name = var.virtual_network_name
-  resource_group_name  = var.resource_group_name
-}
-
 
 # Private Link Endpoint for postgresSQL Server - Default is "false" 
 resource "azurerm_subnet" "snet_ep" {
@@ -265,19 +260,4 @@ resource "azurerm_private_endpoint" "pep2" {
     private_dns_zone_ids = [azurerm_private_dns_zone.dns_zone.0.id]
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
